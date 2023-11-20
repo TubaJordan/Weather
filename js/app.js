@@ -1,14 +1,16 @@
 async function geocodeAddress(address) {
-    const geocodeApiKey = "AIzaSyAwVB3FsGz_L5CsJ-oNMyp82Hf21zsdDEM";
-    const geocodeURL = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${geocodeApiKey}`;
+
+    // const geocodeBackend = `http://localhost:3000/api/geocode?address=${encodeURIComponent(address)}`;
+
+    const geocodeBackend = `https://weatherapi-ff1bda207bd9.herokuapp.com/api/geocode?address=${encodeURIComponent(address)}`;
 
     try {
-        const response = await fetch(geocodeURL);
+        const response = await fetch(geocodeBackend);
         const data = await response.json();
 
         if (data.status === "OK") {
-            const lat = data.results[0].geometry.location.lat;
-            const lon = data.results[0].geometry.location.lng;
+            const lat = data.lat;
+            const lon = data.lon;
             fetchWeather(lat, lon);
         } else {
             console.error("Geocode was not successful for the following reason: " + data.status);
@@ -22,17 +24,21 @@ async function geocodeAddress(address) {
 }
 
 async function fetchWeather(lat, lon) {
-    const weatherApiKey = "bc0874bca7c393ab954249050ad36f51";
-    const weatherURL = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${weatherApiKey}`;
+
+    // const weatherBackend = `http://localhost:3000/api/weather?lat=${lat}&lon=${lon}`;
+
+    const weatherBackend = `https://weatherapi-ff1bda207bd9.herokuapp.com/api/weather?lat=${lat}&lon=${lon}`;
+
+    // https://weatherapi-ff1bda207bd9.herokuapp.com/
 
     try {
-        const response = await fetch(weatherURL);
+        const response = await fetch(weatherBackend);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-
         displayTemp(data);
+
     } catch (error) {
         console.error("Error fetching the weather data:", error);
     }
@@ -53,7 +59,6 @@ function displayTemp(data) {
     }
 
     const forecast = document.getElementById("forecast");
-
     const windSpeedConversion = Math.round(data.current.wind_speed * 2.237);
     const visibilityConversion = Math.round(data.current.visibility / 1609);
     const dewPointConversion = Math.round(((data.current.dew_point - 273.15) * 9 / 5 + 32));
@@ -68,7 +73,6 @@ function displayTemp(data) {
     let iconTest = document.getElementById("icon");
     let mainText = document.getElementById("currentLocation");
 
-
     const timeStamp = data.current.dt;
     const date = new Date(timeStamp * 1000);
     const options = { weekday: "long", year: "numeric", month: "long", day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
@@ -82,7 +86,6 @@ function displayTemp(data) {
     let lowCurrent = Math.round(((data.daily[0].temp.min - 273.15) * 9 / 5 + 32));
     let highCurrent = Math.round(((data.daily[0].temp.max - 273.15) * 9 / 5 + 32));
     let currentConditionsFormat = (data.current.weather[0].description).split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-
 
     forecast.style.opacity = 0;
     weatherConditions.style.opacity = 0;
@@ -120,15 +123,14 @@ function displayTemp(data) {
         document.getElementById("mainHeading").style.opacity = 1;
 
     }, 750);
-}
+};
 
 let currentLoc = document.getElementById("currentLocation");
 
 document.getElementById("weatherButton").addEventListener("click", function () {
+
     const address = document.getElementById("addressInput").value;
-
     currentLoc.style.opacity = 0;
-
     document.getElementById("containerOne").style.opacity = 0;
     document.getElementById("containerTwo").style.opacity = 0;
     document.getElementById("forecastContainer").style.opacity = 0;
@@ -139,12 +141,12 @@ document.getElementById("weatherButton").addEventListener("click", function () {
         currentLoc.innerHTML = `<p>The current weather for <span class="city-state-bold">${address}</span></p>`
         geocodeAddress(address);
     }, 750);
-
 });
 
 document.getElementById("addressInput").addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
+
         const address = document.getElementById("addressInput").value;
 
         currentLoc.style.opacity = 0;
@@ -158,5 +160,35 @@ document.getElementById("addressInput").addEventListener("keypress", function (e
             currentLoc.innerHTML = `<p>The current weather for <span class="city-state-bold">${address}</span></p>`
             geocodeAddress(address);
         }, 750);
+    };
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const inputField = document.getElementById("addressInput");
+    inputField.addEventListener("focus", function () {
+        this.select();
+    });
+});
+
+function initAutocomplete() {
+    const input = document.getElementById('addressInput');
+    const options = {
+        types: ['(cities)'],
+    };
+    let autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.addListener('place_changed', function () {
+        let place = autocomplete.getPlace();
+        if (!place.geometry) {
+            return;
+        }
+    });
+}
+
+window.addEventListener("load", initAutocomplete);
+
+document.getElementById('addressInput').addEventListener('input', function () {
+    let inputLength = this.value.length;
+    if (inputLength >= 3) {
+        initAutocomplete();
     }
 });

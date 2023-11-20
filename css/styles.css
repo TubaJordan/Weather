@@ -258,6 +258,27 @@ body {
     background-color: rgba(12, 74, 124, 1);
 }
 
+.forecast-holder> :nth-child(6n+1) {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+@keyframes sideToSide {
+
+    0%,
+    100% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+}
+
+.main-icon-image {
+    animation: sideToSide 3s ease-in-out infinite;
+}
+
 @media screen and (max-width: 650px) {
     body {
         background-size: cover;
