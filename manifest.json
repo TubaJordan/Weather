@@ -1,7 +1,7 @@
 {
     "name": "Weather",
     "short_name": "Weather",
-    "start_url": "/index.html",
+    "start_url": "/Weather/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "description": "A great way to check the weather!",
