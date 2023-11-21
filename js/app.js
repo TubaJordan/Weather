@@ -196,7 +196,7 @@ document.getElementById('addressInput').addEventListener('input', function () {
 // Ensure that the window has loaded before registering the service worker
 window.addEventListener('load', () => {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('service-worker.js')
             .then((registration) => {
                 console.log('Service Worker registered with scope:', registration.scope);
             }).catch((error) => {
