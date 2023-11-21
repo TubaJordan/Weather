@@ -29,8 +29,6 @@ async function fetchWeather(lat, lon) {
 
     const weatherBackend = `https://weatherapi-ff1bda207bd9.herokuapp.com/api/weather?lat=${lat}&lon=${lon}`;
 
-    // https://weatherapi-ff1bda207bd9.herokuapp.com/
-
     try {
         const response = await fetch(weatherBackend);
         if (!response.ok) {
@@ -191,4 +189,63 @@ document.getElementById('addressInput').addEventListener('input', function () {
     if (inputLength >= 3) {
         initAutocomplete();
     }
+});
+
+
+
+// Ensure that the window has loaded before registering the service worker
+window.addEventListener('load', () => {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+    }
+});
+
+
+// Add this code after your service worker registration code
+let deferredPrompt;
+const installPopup = document.getElementById('installPopup');
+const btnInstall = document.getElementById('btnInstall');
+const btnCancel = document.getElementById('btnCancel');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI to show the popup
+    installPopup.style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+});
+
+btnInstall.addEventListener('click', (e) => {
+    // hide our popup
+    installPopup.style.display = 'none';
+    // Show the prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the A2HS prompt');
+        } else {
+            console.log('User dismissed the A2HS prompt');
+        }
+        deferredPrompt = null;
+    });
+    document.getElementById('overlay').style.display = 'none';
+});
+
+btnCancel.addEventListener('click', (e) => {
+    // hide our popup
+    installPopup.style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+});
+
+window.addEventListener('appinstalled', (evt) => {
+    // Log install to analytics
+    console.log('INSTALL: Success');
 });

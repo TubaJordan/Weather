@@ -412,3 +412,38 @@ body {
         width: 100%;
     }
 }
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 999;
+}
+
+.install-popup {
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 20px;
+    z-index: 1000;
+    width: 300px;
+    box-shadow: 6px 8px 15px rgba(0, 0, 0, 1);
+    border-radius: 20px;
+}
+
+.install-popup-content {
+    text-align: center;
+}
+
+#btnInstall,
+#btnCancel {
+    width: 85px;
+    height: 40px;
+    margin: 5px;
+}

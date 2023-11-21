@@ -4,12 +4,23 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+        <!-- <link rel="manifest" href="../images/site.webmanifest"> -->
+        <link rel="mask-icon" href="../images/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#2d89ef">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="manifest" href="/manifest.json">
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300&display=swap"
             rel="stylesheet">
         <link rel="stylesheet" href="css/styles.css">
-        <title>Weather App</title>
+        <title>Weather</title>
     </head>
 
     <body>
@@ -52,6 +63,15 @@
 
             </div>
         </main>
+
+        <div id="overlay" class="overlay" style="display:none;"></div>
+        <div id="installPopup" class="install-popup" style="display:none;">
+            <div class="install-popup-content">
+                <p>Install this app on your device for easy access?</p>
+                <button id="btnInstall">Install</button>
+                <button id="btnCancel">Not now</button>
+            </div>
+        </div>
 
         <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwVB3FsGz_L5CsJ-oNMyp82Hf21zsdDEM&callback=initAutocomplete&libraries=places"></script>
