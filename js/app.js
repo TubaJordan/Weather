@@ -84,17 +84,17 @@ function displayTemp(data) {
     const feelsLikeConversion = Math.round(((data.current.feels_like - 273.15) * 9 / 5 + 32));
     let converting = Math.round(((temp - 273.15) * 9 / 5 + 32));
 
-    // Formatting and displaying date and weather conditions.
-    const formattedDate = date.toLocaleDateString("en-US", options);
-    const headerFormattedDate = headerDate.toLocaleDateString("en-US", headerOptions);
 
-    // Current weather conditions formatting for display.
     const timeStamp = data.current.dt;
     const date = new Date(timeStamp * 1000);
     const options = { weekday: "long", year: "numeric", month: "long", day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+    const formattedDate = date.toLocaleDateString("en-US", options);
+
     const headerTimeStamp = data.current.dt;
     const headerDate = new Date(headerTimeStamp * 1000);
     const headerOptions = { weekday: "long", month: "long", day: 'numeric' };
+    const headerFormattedDate = headerDate.toLocaleDateString("en-US", headerOptions);
+
     let lowCurrent = Math.round(((data.daily[0].temp.min - 273.15) * 9 / 5 + 32));
     let highCurrent = Math.round(((data.daily[0].temp.max - 273.15) * 9 / 5 + 32));
     let currentConditionsFormat = (data.current.weather[0].description).split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
