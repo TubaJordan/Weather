@@ -1,3 +1,58 @@
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        alert("Geolocation is not supported by this browser");
+    }
+}
+
+function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    fetchWeather(lat, lon);
+    updateLocationDisplay(lat, lon);
+}
+
+function showError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
+    }
+}
+
+async function updateLocationDisplay(lat, lon) {
+    const reverseGeocodeBackend = `https://weatherapi-ff1bda207bd9.herokuapp.com/api/reverse-geocode?lat=${lat}&lon=${lon}`;
+
+    try {
+        const response = await fetch(reverseGeocodeBackend);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (data.city) {
+            displayLocation(data.city); // Update the location bar with the city name.
+        }
+    } catch (error) {
+        console.error("Error fetching the reverse geocoding data:", error);
+    }
+}
+
+function displayLocation(city) {
+    let currentLoc = document.getElementById("currentLocation");
+    currentLoc.innerHTML = `<p>The current weather for <span class="city-state-bold">${city}</span></p>`;
+}
+
 async function geocodeAddress(address) {
     // Constructs the URL for the geocoding API call, encoding the address.
     const geocodeBackend = `https://weatherapi-ff1bda207bd9.herokuapp.com/api/geocode?address=${encodeURIComponent(address)}`;
@@ -188,6 +243,7 @@ document.getElementById("addressInput").addEventListener("keypress", function (e
 
 // Adds an event listener for when the document is fully loaded and interactive ("DOMContentLoaded").
 document.addEventListener("DOMContentLoaded", function () {
+    getLocation();
     // Retrieves the "addressInput" field.
     const inputField = document.getElementById("addressInput");
     // Adds a "focus" event listener to the input field. When it receives focus, all of its text is selected.
